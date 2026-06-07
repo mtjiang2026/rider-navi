@@ -1,5 +1,7 @@
 name: Build APK
 on: [push]
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,9 +32,9 @@ jobs:
         orientation = portrait
         fullscreen = 1
         android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,RECORD_AUDIO
-        android.api = 33
+        android.api = 31
         android.minapi = 24
-        android.ndk = 25b
+        android.ndk = 23b
         android.accept_sdk_license = True
         p4a.branch = develop
         
