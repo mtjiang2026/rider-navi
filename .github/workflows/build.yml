@@ -18,28 +18,28 @@ jobs:
       run: |
         buildozer init
         cat > buildozer.spec << 'SPECEOF'
-[app]
-title = 骑手导航
-package.name = ridernavi
-package.domain = org.test
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,json
-version = 1.0
-requirements = python3,kivy,folium,requests
-orientation = portrait
-fullscreen = 1
-android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,RECORD_AUDIO
-android.api = 33
-android.minapi = 24
-android.ndk = 25b
-android.sdk = 33
-android.accept_sdk_license = True
-p4a.branch = develop
-
-[buildozer]
-log_level = 2
-warn_on_root = 1
-SPECEOF
+        [app]
+        title = 骑手导航
+        package.name = ridernavi
+        package.domain = org.test
+        source.dir = .
+        source.include_exts = py,png,jpg,kv,atlas,json
+        version = 1.0
+        requirements = python3,kivy,folium,requests
+        orientation = portrait
+        fullscreen = 1
+        android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,RECORD_AUDIO
+        android.api = 33
+        android.minapi = 24
+        android.ndk = 25b
+        android.sdk = 33
+        android.accept_sdk_license = True
+        p4a.branch = develop
+        
+        [buildozer]
+        log_level = 2
+        warn_on_root = 1
+        SPECEOF
         buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v3
