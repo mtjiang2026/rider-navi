@@ -1,7 +1,5 @@
 name: Build APK
 on: [push]
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,11 +9,11 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer
+    - name: Install Buildozer 1.4.0
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
-        pip install buildozer
+        pip install buildozer==1.4.0
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -32,10 +30,9 @@ jobs:
         orientation = portrait
         fullscreen = 1
         android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,RECORD_AUDIO
-        android.api = 33
+        android.api = 31
         android.minapi = 24
-        android.ndk = 25b
-        android.aab = False
+        android.ndk = 23b
         android.accept_sdk_license = True
         p4a.branch = master
         
