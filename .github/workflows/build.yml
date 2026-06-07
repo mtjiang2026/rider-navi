@@ -1,7 +1,5 @@
 name: Build APK
 on: [push]
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,7 +34,7 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = master
+        p4a.branch = develop
         
         [buildozer]
         log_level = 2
