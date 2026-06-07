@@ -16,6 +16,7 @@ jobs:
         pip install buildozer
     - name: Build APK
       run: |
+        rm -f buildozer.spec
         buildozer init
         cat > buildozer.spec << 'SPECEOF'
         [app]
@@ -40,6 +41,7 @@ jobs:
         log_level = 2
         warn_on_root = 1
         SPECEOF
+        buildozer android clean
         buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
