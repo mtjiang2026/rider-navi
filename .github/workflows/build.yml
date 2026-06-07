@@ -35,9 +35,8 @@ jobs:
         android.api = 33
         android.minapi = 24
         android.ndk = 25b
-        android.sdk = 33
         android.accept_sdk_license = True
-        p4a.branch = develop
+        p4a.branch = master
         
         [buildozer]
         log_level = 2
