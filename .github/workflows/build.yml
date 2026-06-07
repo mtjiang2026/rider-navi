@@ -1,5 +1,7 @@
 name: Build APK
 on: [push]
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,7 +43,6 @@ jobs:
         log_level = 2
         warn_on_root = 1
         SPECEOF
-        buildozer android clean
         buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
