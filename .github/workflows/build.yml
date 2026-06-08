@@ -12,11 +12,15 @@ jobs:
     - name: Install Buildozer and Cython
       run: |
         sudo apt update
-        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget autoconf libtool
+        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
         pip install buildozer cython
-    - name: Prepare all dependencies
+    - name: Prepare custom python-for-android (skip libffi autogen)
       run: |
-        # 1. 手动下载并放置 NDK（Buildozer 会跳过下载）
+        # 手动克隆 develop 分支到本地，以便我们修改配方
+        git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
+        # 修改 libffi 配方，将出错的 autogen.sh 替换为空操作（true）
+        sed -i "s/shprint(sh.Command('.\/autogen.sh'), _env=env)/shprint(sh.Command('true'))/" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        # 提前下载 NDK 和 sdl2_image，避免网络波动
         mkdir -p ~/.buildozer/android/platform
         if [ ! -d ~/.buildozer/android/platform/android-ndk-r25b ]; then
           wget -q --show-progress -O ~/.buildozer/android/platform/ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
@@ -24,38 +28,11 @@ jobs:
           unzip -q ndk.zip
           rm ndk.zip
         fi
-
-        # 2. 手动下载 libffi 源码并生成 configure（跳过 autogen.sh）
-        mkdir -p ~/.buildozer/android/platform/build-armeabi-v7a/build/other_builds/libffi
-        cd ~/.buildozer/android/platform/build-armeabi-v7a/build/other_builds/libffi
-        if [ ! -f libffi/configure ]; then
-          wget -q --show-progress -O libffi.tar.gz "https://github.com/libffi/libffi/archive/v3.4.2.tar.gz"
-          tar -xzf libffi.tar.gz
-          mv libffi-3.4.2 libffi
-          cd libffi
-          # 直接运行 autoreconf 跳过出错的 autogen.sh
-          autoreconf -fi
-          cd ..
-          rm libffi.tar.gz
-        fi
-
-        # 3. 手动下载 sdl2_image 及所有子模块（提前避免网络超时）
         mkdir -p ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         cd ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         if [ ! -f SDL2_image-2.8.2.tar.gz ]; then
           wget -q --show-progress -O SDL2_image-2.8.2.tar.gz "https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-2.8.2.tar.gz"
         fi
-        # 提前解压并克隆所有子模块（这一步确保 Git 能顺利下载所有外部依赖）
-        tar -xzf SDL2_image-2.8.2.tar.gz
-        cd SDL2_image-2.8.2
-        # 修改 .gitmodules，去掉可能出问题的 libjxl 子模块
-        if [ -f .gitmodules ]; then
-          sed -i '/\[submodule "external\/libjxl"\]/,/^$/d' .gitmodules
-        fi
-        # 强制同步所有子模块（排除 libjxl）
-        git submodule update --init --recursive --depth 1
-        cd ..
-        rm -rf SDL2_image-2.8.2
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -76,7 +53,7 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = develop
+        p4a.source_dir = /home/runner/p4a-custom
         
         [buildozer]
         log_level = 2
