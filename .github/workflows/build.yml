@@ -9,18 +9,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer and Cython
+    - name: Install Buildozer 1.2.0 and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
-        pip install buildozer cython
+        pip install buildozer==1.2.0 cython
     - name: Prepare custom python-for-android (skip libffi autogen)
       run: |
-        # 手动克隆 develop 分支到本地，以便我们修改配方
+        # 克隆 develop 分支并修复 libffi 配方
         git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
-        # 修改 libffi 配方，将出错的 autogen.sh 替换为空操作（true）
         sed -i "s/shprint(sh.Command('.\/autogen.sh'), _env=env)/shprint(sh.Command('true'))/" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
-        # 提前下载 NDK 和 sdl2_image，避免网络波动
+        # 手动下载 NDK
         mkdir -p ~/.buildozer/android/platform
         if [ ! -d ~/.buildozer/android/platform/android-ndk-r25b ]; then
           wget -q --show-progress -O ~/.buildozer/android/platform/ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
@@ -28,6 +27,7 @@ jobs:
           unzip -q ndk.zip
           rm ndk.zip
         fi
+        # 手动下载 sdl2_image
         mkdir -p ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         cd ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         if [ ! -f SDL2_image-2.8.2.tar.gz ]; then
