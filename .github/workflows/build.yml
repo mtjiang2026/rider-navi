@@ -9,13 +9,11 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer and Cython
+    - name: Install Buildozer 1.2.0 and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
-        pip install buildozer cython
-    - name: Clear old p4a cache
-      run: rm -rf ~/.buildozer/android/platform/python-for-android
+        pip install buildozer==1.2.0 cython
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -35,8 +33,9 @@ jobs:
         android.api = 33
         android.minapi = 24
         android.ndk = 25b
+        android.aab = False
         android.accept_sdk_license = True
-        p4a.branch = develop
+        p4a.branch = master
         
         [buildozer]
         log_level = 2
