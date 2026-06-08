@@ -9,18 +9,27 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer 1.2.0 and Cython
+    - name: Install Buildozer and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
-        pip install buildozer==1.2.0 cython
-    - name: Download NDK manually
+        pip install buildozer cython
+    - name: Download NDK and SDK manually
       run: |
         mkdir -p ~/.buildozer/android/platform
+        
+        # 下载 NDK
         cd ~/.buildozer/android/platform
-        wget -q --show-progress -O ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
-        unzip -q ndk.zip
-        rm ndk.zip
+        wget -q --show-progress "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
+        unzip -q android-ndk-r25b-linux.zip
+        rm android-ndk-r25b-linux.zip
+        
+        # 下载 SDK
+        wget -q --show-progress "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
+        mkdir -p android-sdk
+        cd android-sdk
+        unzip -q ../commandlinetools-linux-6514223_latest.zip
+        rm ../commandlinetools-linux-6514223_latest.zip
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -33,10 +42,10 @@ jobs:
         source.dir = .
         source.include_exts = py,png,jpg,kv,atlas,json
         version = 1.0
-        requirements = python3==3.10.14,kivy,requests
+        requirements = python3,kivy
         orientation = portrait
         fullscreen = 1
-        android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
+        android.permissions = INTERNET
         android.api = 31
         android.minapi = 24
         android.ndk = 25b
