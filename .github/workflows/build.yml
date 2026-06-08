@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Setup Python
+    - name: Setup Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.10'
     - name: Install Buildozer 1.2.0 and tools
       run: |
         sudo apt update
@@ -56,11 +56,9 @@ jobs:
         for ac in glob.glob(os.path.expanduser("~/.buildozer/android/platform/build-*/build/other_builds/libffi/*/libffi/configure.ac")):
             with open(ac, "r+") as f:
                 content = f.read()
-                # 如果还没有添加过缺失宏，则追加
                 if "LT_SYS_SYMBOL_USCORE" not in content:
                     f.write("\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n")
                     print(f"Patched {ac}")
-                # 同时注释掉所有过时的宏
                 f.seek(0)
                 lines = f.readlines()
                 f.seek(0)
