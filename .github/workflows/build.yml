@@ -1,246 +1,55 @@
-[=====================                  ] 54% Unzipping... android-13/skins/WVGA
-[=====================                  ] 54% Unzipping... android-13/skins/WQVG
-[=====================                  ] 54% Unzipping... android-13/skins/WVGA
-[=====================                  ] 54% Unzipping... android-13/skins/QVGA
-[=====================                  ] 54% Unzipping... android-13/skins/WXGA
-[=====================                  ] 54% Unzipping... android-13/skins/WSVG
-[=====================                  ] 54% Unzipping... android-13/skins/WXGA
-[=====================                  ] 54% Unzipping... android-13/framework.
-[=====================                  ] 55% Unzipping... android-13/framework.
-[=======================================] 100% Unzipping... android-13/framework
-Warning: : prerequisites.py is experimental and does not support all prerequisites yet.
-# Android packages installation done.
-Warning: : Please report any issues to the python-for-android issue tracker.
-# Read available permissions from api-versions.xml
-# Check application requirements
-# Check garden requirements
-# Compile platform
-# Run '/opt/hostedtoolcache/Python/3.8.18/x64/bin/python -m pythonforandroid.toolchain create --dist_name=ridernavi --bootstrap=sdl2 --requirements=python3,kivy,folium,requests --arch armeabi-v7a --copy-libs --color=always --storage-dir="/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a" --ndk-api=24'
-# Cwd /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android
-Warning: : prerequisites.py is experimental and does not support all prerequisites yet.
-Warning: : Please report any issues to the python-for-android issue tracker.
-[INFO]:    Will compile for the following archs: armeabi-v7a
-[INFO]:    Found Android API target in $ANDROIDAPI: 33
-[INFO]:    Available Android APIs are (33)
-[INFO]:    Requested API target 33 is available, continuing.
-[INFO]:    Found NDK dir in $ANDROIDNDK: /home/runner/.buildozer/android/platform/android-ndk-r25b
-[INFO]:    Found NDK version 25b
-[INFO]:    Getting NDK API version (i.e. minimum supported API) from user argument
-[INFO]:    ccache is missing, the build will not be optimized in the future.
-[INFO]:    No existing dists meet the given requirements!
-[INFO]:    No dist exists that meets your requirements, so one will be built.
-[INFO]:    Found a single valid recipe set: ['folium', 'hostpython3', 'libffi', 'openssl', 'requests', 'sdl2_image', 'sdl2_mixer', 'sdl2_ttf', 'six', 'sqlite3', 'python3', 'sdl2', 'pyjnius', 'setuptools', 'android', 'kivy']
-[INFO]:    The selected bootstrap is sdl2
-[INFO]:    # Creating dist with sdl2 bootstrap
-[INFO]:    Dist will have name ridernavi and requirements (python3, kivy, folium, requests)
-[INFO]:    Dist contains the following requirements as recipes: ['hostpython3', 'libffi', 'openssl', 'sdl2_image', 'sdl2_mixer', 'sdl2_ttf', 'sqlite3', 'python3', 'sdl2', 'pyjnius', 'setuptools', 'android', 'kivy']
-[INFO]:    Dist will also contain modules (idna, filetype, chardet, certifi, folium, requests, six, urllib3) installed from pip
-[INFO]:    Dist will be build in mode debug
-[INFO]:    -> directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a/build/bootstrap_builds/sdl2
-[INFO]:    <- directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android
-[INFO]:    Recipe build order is ['hostpython3', 'libffi', 'openssl', 'sdl2_image', 'sdl2_mixer', 'sdl2_ttf', 'sqlite3', 'python3', 'sdl2', 'pyjnius', 'setuptools', 'android', 'kivy']
-[INFO]:    The requirements (certifi, chardet, filetype, folium, idna, requests, six, urllib3) were not found as recipes, they will be installed with pip.
-[INFO]:    # Downloading recipes 
-[INFO]:    Downloading hostpython3
-[INFO]:    -> directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a/packages/hostpython3
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running basename https://github.com/python/cpython/archive/...(and 24 more)
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running rm -f .mark-v3.14.2.tar.gz
-[INFO]:    Downloading hostpython3 from https://github.com/python/cpython/archive/refs/tags/v3.14.2.tar.gz
-[INFO]:    <- directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android
-[INFO]:    Downloading libffi
-[INFO]:    -> directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a/packages/libffi
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running basename https://github.com/libffi/libffi/archive/v3.4.2.tar.gz
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running rm -f .mark-v3.4.2.tar.gz
-[INFO]:    Downloading libffi from https://github.com/libffi/libffi/archive/v3.4.2.tar.gz
-[INFO]:    <- directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android
-[INFO]:    Downloading openssl
-[INFO]:    -> directory context /home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a/packages/openssl
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running basename https://www.openssl.org/source/openssl-3.3.1.tar.gz
-stty: 'standard input': Inappropriate ioctl for device
-[INFO]:    -> running rm -f .mark-openssl-3.3.1.tar.gz
-[INFO]:    Downloading openssl from https://www.openssl.org/source/openssl-3.3.1.tar.gz
-Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/runpy.py", line 194, in _run_module_as_main
-    return _run_code(code, main_globals, None,
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/runpy.py", line 87, in _run_code
-    exec(code, run_globals)
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 1290, in <module>
-    main()
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/entrypoints.py", line 18, in main
-    ToolchainCL()
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 721, in __init__
-    getattr(self, command)(args)
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 104, in wrapper_func
-    build_dist_from_args(ctx, dist, args)
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/toolchain.py", line 163, in build_dist_from_args
-    build_recipes(build_order, python_modules, ctx,
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/build.py", line 504, in build_recipes
-    recipe.download_if_necessary()
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 395, in download_if_necessary
-    self.download()
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 445, in download
-    self.download_file(self.versioned_url, filename)
-  File "/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/python-for-android/pythonforandroid/recipe.py", line 246, in download_file
-    urlretrieve(url, target, report_hook)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 247, in urlretrieve
-    with contextlib.closing(urlopen(url, data)) as fp:
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 222, in urlopen
-    return opener.open(url, data, timeout)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 531, in open
-    response = meth(req, response)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 640, in http_response
-    response = self.parent.error(
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 563, in error
-    result = self._call_chain(*args)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 502, in _call_chain
-    result = func(*args)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 755, in http_error_302
-    return self.parent.open(new, timeout=req.timeout)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 531, in open
-    response = meth(req, response)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 640, in http_response
-    response = self.parent.error(
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 569, in error
-    return self._call_chain(*args)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 502, in _call_chain
-    result = func(*args)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/urllib/request.py", line 649, in http_error_default
-    raise HTTPError(req.full_url, code, msg, hdrs, fp)
-urllib.error.HTTPError: HTTP Error 504: Gateway Time-out
-Download failed: HTTP Error 504: Gateway Time-out; retrying in 1 second(s)...Download failed: HTTP Error 504: Gateway Time-out; retrying in 2 second(s)...Download failed: HTTP Error 504: Gateway Time-out; retrying in 4 second(s)...Download failed: HTTP Error 504: Gateway Time-out; retrying in 8 second(s)...# Command failed: /opt/hostedtoolcache/Python/3.8.18/x64/bin/python -m pythonforandroid.toolchain create --dist_name=ridernavi --bootstrap=sdl2 --requirements=python3,kivy,folium,requests --arch armeabi-v7a --copy-libs --color=always --storage-dir="/home/runner/work/rider-navi/rider-navi/.buildozer/android/platform/build-armeabi-v7a" --ndk-api=24
-# ENVIRONMENT:
-#     SHELL = '/bin/bash'
-#     SELENIUM_JAR_PATH = '/usr/share/java/selenium-server.jar'
-#     CONDA = '/usr/share/miniconda'
-#     GITHUB_WORKSPACE = '/home/runner/work/rider-navi/rider-navi'
-#     JAVA_HOME_11_X64 = '/usr/lib/jvm/temurin-11-jdk-amd64'
-#     JAVA_HOME_25_X64 = '/usr/lib/jvm/temurin-25-jdk-amd64'
-#     PKG_CONFIG_PATH = '/opt/hostedtoolcache/Python/3.8.18/x64/lib/pkgconfig'
-#     GITHUB_PATH = '/home/runner/work/_temp/_runner_file_commands/add_path_d973a3d3-a7d7-46d3-b1a3-cb17c2825494'
-#     GITHUB_ACTION = '__run_3'
-#     JAVA_HOME = '/usr/lib/jvm/temurin-17-jdk-amd64'
-#     GITHUB_RUN_NUMBER = '22'
-#     RUNNER_NAME = 'GitHub Actions 1000000020'
-#     GRADLE_HOME = '/usr/share/gradle-9.5.1'
-#     GITHUB_REPOSITORY_OWNER_ID = '291596504'
-#     ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE = '/opt/actionarchivecache'
-#     XDG_CONFIG_HOME = '/home/runner/.config'
-#     Python_ROOT_DIR = '/opt/hostedtoolcache/Python/3.8.18/x64'
-#     MEMORY_PRESSURE_WRITE = 'c29tZSAyMDAwMDAgMjAwMDAwMAA='
-#     DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
-#     ANT_HOME = '/usr/share/ant'
-#     JAVA_HOME_8_X64 = '/usr/lib/jvm/temurin-8-jdk-amd64'
-#     GITHUB_TRIGGERING_ACTOR = 'mtjiang2026'
-#     pythonLocation = '/opt/hostedtoolcache/Python/3.8.18/x64'
-#     GITHUB_REF_TYPE = 'branch'
-#     HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS = '3650'
-#     ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED = '1'
-#     ANDROID_NDK = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
-#     BOOTSTRAP_HASKELL_NONINTERACTIVE = '1'
-#     PWD = '/home/runner/work/rider-navi/rider-navi'
-#     PIPX_BIN_DIR = '/opt/pipx_bin'
-#     LOGNAME = 'runner'
-#     GITHUB_REPOSITORY_ID = '1262271784'
-#     GITHUB_ACTIONS = 'true'
-#     USE_BAZEL_FALLBACK_VERSION = 'silent:'
-#     ANDROID_NDK_LATEST_HOME = '/usr/local/lib/android/sdk/ndk/29.0.14206865'
-#     SYSTEMD_EXEC_PID = '2095'
-#     GITHUB_SHA = '04536b5637c09c3f84244f5e5492b6e3fe9fdc85'
-#     GITHUB_WORKFLOW_REF = 'mtjiang2026/rider-navi/.github/workflows/build.yml@refs/heads/main'
-#     POWERSHELL_DISTRIBUTION_CHANNEL = 'GitHub-Actions-Linux'
-#     RUNNER_ENVIRONMENT = 'github-hosted'
-#     DOTNET_MULTILEVEL_LOOKUP = '0'
-#     GITHUB_REF = 'refs/heads/main'
-#     RUNNER_OS = 'Linux'
-#     GITHUB_REF_PROTECTED = 'false'
-#     HOME = '/home/runner'
-#     GITHUB_API_URL = 'https://api.github.com'
-#     LANG = 'C.UTF-8'
-#     GOROOT_1_25_X64 = '/opt/hostedtoolcache/go/1.25.10/x64'
-#     RUNNER_TRACKING_ID = 'github_8c9d5480-45e3-4290-add0-0e7753bc91d9'
-#     RUNNER_ARCH = 'X64'
-#     MEMORY_PRESSURE_WATCH = '/sys/fs/cgroup/system.slice/hosted-compute-agent.service/memory.pressure'
-#     RUNNER_TEMP = '/home/runner/work/_temp'
-#     GITHUB_STATE = '/home/runner/work/_temp/_runner_file_commands/save_state_d973a3d3-a7d7-46d3-b1a3-cb17c2825494'
-#     EDGEWEBDRIVER = '/usr/local/share/edge_driver'
-#     JAVA_HOME_21_X64 = '/usr/lib/jvm/temurin-21-jdk-amd64'
-#     GITHUB_ENV = '/home/runner/work/_temp/_runner_file_commands/set_env_d973a3d3-a7d7-46d3-b1a3-cb17c2825494'
-#     GITHUB_EVENT_PATH = '/home/runner/work/_temp/_github_workflow/event.json'
-#     INVOCATION_ID = 'dbce558d7ee94a37b4ba0490363f3a35'
-#     GITHUB_EVENT_NAME = 'push'
-#     GITHUB_RUN_ID = '27123644904'
-#     JAVA_HOME_17_X64 = '/usr/lib/jvm/temurin-17-jdk-amd64'
-#     ANDROID_NDK_HOME = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
-#     GITHUB_STEP_SUMMARY = '/home/runner/work/_temp/_runner_file_commands/step_summary_d973a3d3-a7d7-46d3-b1a3-cb17c2825494'
-#     HOMEBREW_NO_AUTO_UPDATE = '1'
-#     GITHUB_ACTOR = 'mtjiang2026'
-#     NVM_DIR = '/home/runner/.nvm'
-#     SGX_AESM_ADDR = '1'
-#     GITHUB_RUN_ATTEMPT = '1'
-#     ANDROID_HOME = '/usr/local/lib/android/sdk'
-#     GITHUB_GRAPHQL_URL = 'https://api.github.com/graphql'
-#     ACCEPT_EULA = 'Y'
-#     USER = 'runner'
-#     PSModulePath = '/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0'
-#     GITHUB_SERVER_URL = 'https://github.com'
-#     PIPX_HOME = '/opt/pipx'
-#     GECKOWEBDRIVER = '/usr/local/share/gecko_driver'
-#     CHROMEWEBDRIVER = '/usr/local/share/chromedriver-linux64'
-#     SHLVL = '1'
-#     ANDROID_SDK_ROOT = '/usr/local/lib/android/sdk'
-#     VCPKG_INSTALLATION_ROOT = '/usr/local/share/vcpkg'
-#     GITHUB_ACTOR_ID = '291596504'
-#     ACTIONS_ORCHESTRATION_ID = '158fc8f9-ec09-4ae4-8cee-3739aa220601.build.__default'
-#     RUNNER_TOOL_CACHE = '/opt/hostedtoolcache'
-#     ImageVersion = '20260525.161.1'
-#     Python3_ROOT_DIR = '/opt/hostedtoolcache/Python/3.8.18/x64'
-#     DOTNET_NOLOGO = '1'
-#     GOROOT_1_23_X64 = '/opt/hostedtoolcache/go/1.23.12/x64'
-#     GITHUB_WORKFLOW_SHA = '04536b5637c09c3f84244f5e5492b6e3fe9fdc85'
-#     GOROOT_1_24_X64 = '/opt/hostedtoolcache/go/1.24.13/x64'
-#     GITHUB_REF_NAME = 'main'
-#     GITHUB_JOB = 'build'
-#     LD_LIBRARY_PATH = '/opt/hostedtoolcache/Python/3.8.18/x64/lib'
-#     XDG_RUNTIME_DIR = '/run/user/1001'
-#     AZURE_EXTENSION_DIR = '/opt/az/azcliextensions'
-#     GITHUB_REPOSITORY = 'mtjiang2026/rider-navi'
-#     Python2_ROOT_DIR = '/opt/hostedtoolcache/Python/3.8.18/x64'
-#     ANDROID_NDK_ROOT = '/usr/local/lib/android/sdk/ndk/27.3.13750724'
-#     CHROME_BIN = '/usr/bin/google-chrome'
-#     GOROOT_1_22_X64 = '/opt/hostedtoolcache/go/1.22.12/x64'
-#     GITHUB_RETENTION_DAYS = '90'
-#     JOURNAL_STREAM = '9:10946'
-#     RUNNER_WORKSPACE = '/home/runner/work/rider-navi'
-#     GITHUB_ACTION_REPOSITORY = ''
-#     PATH = '/home/runner/.buildozer/android/platform/apache-ant-1.9.4/bin:/opt/hostedtoolcache/Python/3.8.18/x64/bin:/opt/hostedtoolcache/Python/3.8.18/x64:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
-#     GITHUB_BASE_REF = ''
-#     GHCUP_INSTALL_BASE_PREFIX = '/usr/local'
-#     CI = 'true'
-#     SWIFT_PATH = '/usr/share/swift/usr/bin'
-#     ImageOS = 'ubuntu24'
-#     GITHUB_REPOSITORY_OWNER = 'mtjiang2026'
-#     GITHUB_HEAD_REF = ''
-#     GITHUB_ACTION_REF = ''
-#     ENABLE_RUNNER_TRACING = 'true'
-#     GITHUB_WORKFLOW = 'Build APK'
-#     DEBIAN_FRONTEND = 'noninteractive'
-#     GITHUB_OUTPUT = '/home/runner/work/_temp/_runner_file_commands/set_output_d973a3d3-a7d7-46d3-b1a3-cb17c2825494'
-#     AGENT_TOOLSDIRECTORY = '/opt/hostedtoolcache'
-#     _ = '/opt/hostedtoolcache/Python/3.8.18/x64/bin/buildozer'
-#     PACKAGES_PATH = '/home/runner/.buildozer/android/packages'
-#     ANDROIDSDK = '/home/runner/.buildozer/android/platform/android-sdk'
-#     ANDROIDNDK = '/home/runner/.buildozer/android/platform/android-ndk-r25b'
-#     ANDROIDAPI = '33'
-#     ANDROIDMINAPI = '24'
-# 
-# Buildozer failed to execute the last command
-# The error might be hidden in the log above this error
-# Please read the full log, and search for it before
-# raising an issue with buildozer itself.
-# In case of a bug report, please add a full log with log_level = 2
-Error: Process completed with exit code 1.
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.8'
+    - name: Install Buildozer 1.2.0 and Cython
+      run: |
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
+        pip install buildozer==1.2.0 cython
+    - name: Download NDK manually
+      run: |
+        mkdir -p ~/.buildozer/android/platform
+        wget -q --show-progress -O ~/.buildozer/android/platform/ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
+        cd ~/.buildozer/android/platform
+        unzip -q ndk.zip
+        rm ndk.zip
+    - name: Build APK
+      run: |
+        rm -f buildozer.spec
+        buildozer init
+        cat > buildozer.spec << 'SPECEOF'
+        [app]
+        title = 骑手导航
+        package.name = ridernavi
+        package.domain = org.test
+        source.dir = .
+        source.include_exts = py,png,jpg,kv,atlas,json
+        version = 1.0
+        requirements = python3,kivy,folium,requests
+        orientation = portrait
+        fullscreen = 1
+        android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,RECORD_AUDIO
+        android.api = 33
+        android.minapi = 24
+        android.ndk = 25b
+        android.accept_sdk_license = True
+        p4a.branch = master
+        
+        [buildozer]
+        log_level = 2
+        warn_on_root = 1
+        SPECEOF
+        buildozer -v android debug
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: ridernavi-apk
+        path: bin/*.apk
