@@ -18,35 +18,55 @@ jobs:
       run: |
         git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         
-        # 用 Python 脚本直接修改 configure.ac，修复过时宏问题
-        python3 << 'PYEOF'
-        import os
+        # 直接创建一个修复好的 libffi 配方文件（缩进完全正确）
+        cat > /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py << 'RECIPEEOF'
+import os
+import sh
+from pythonforandroid.logger import shprint
+from pythonforandroid.recipe import NDKRecipe
 
-        recipe_file = "/home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py"
-        with open(recipe_file, 'r') as f:
-            content = f.read()
 
-        # 在 autogen.sh 前插入更彻底的修补代码
-        old = "shprint(sh.Command('./autogen.sh'), _env=env)"
-        new = """        # 彻底修复 configure.ac 中的过时宏，并添加缺失宏
-                configure_ac = os.path.join(build_dir, 'configure.ac')
-                if os.path.exists(configure_ac):
-                    with open(configure_ac, 'r+') as f:
-                        lines = f.readlines()
-                        f.seek(0)
-                        for line in lines:
-                            # 注释掉过时的宏调用，避免 autoreconf 报错
-                            if 'AC_CANONICAL_SYSTEM' in line or 'AC_PROG_LIBTOOL' in line or 'AC_HEADER_STDC' in line or 'AC_TRY_COMPILE' in line or 'AC_TRY_LINK' in line or 'AC_TRY_RUN' in line or 'AC_HELP_STRING' in line:
-                                line = '#' + line
-                            f.write(line)
-                        f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')
-                shprint(sh.Command('./autogen.sh'), _env=env)"""
-        content = content.replace(old, new)
+class LibffiRecipe(NDKRecipe):
+    version = '3.4.2'
+    url = 'https://github.com/libffi/libffi/archive/v{version}.tar.gz'
+    name = 'libffi'
 
-        with open(recipe_file, 'w') as f:
-            f.write(content)
-        print("libffi recipe fully patched.")
-        PYEOF
+    def get_include_dirs(self, arch):
+        return [os.path.join(self.get_build_dir(arch.arch), 'include')]
+
+    def build_arch(self, arch):
+        env = self.get_recipe_env(arch)
+        build_dir = self.get_build_dir(arch.arch)
+        configure = sh.Command(os.path.join(build_dir, 'configure'))
+
+        # 修补 configure.ac，注释过时宏并添加缺失宏
+        configure_ac = os.path.join(build_dir, 'configure.ac')
+        if os.path.exists(configure_ac):
+            with open(configure_ac, 'r+') as f:
+                lines = f.readlines()
+                f.seek(0)
+                for line in lines:
+                    if any(macro in line for macro in [
+                        'AC_CANONICAL_SYSTEM', 'AC_PROG_LIBTOOL',
+                        'AC_HEADER_STDC', 'AC_TRY_COMPILE',
+                        'AC_TRY_LINK', 'AC_TRY_RUN', 'AC_HELP_STRING'
+                    ]):
+                        f.write('#' + line)
+                    else:
+                        f.write(line)
+                f.write('\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n')
+            shprint(sh.Command('./autogen.sh'), _env=env)
+
+        shprint(configure,
+                '--host={}'.format(arch.command_prefix),
+                '--prefix={}'.format(self.ctx.get_python_install_dir()),
+                _env=env)
+        shprint(sh.make, '-j4', _env=env)
+        shprint(sh.make, 'install', _env=env)
+
+
+recipe = LibffiRecipe()
+RECIPEEOF
 
         # 手动下载 NDK 和 SDK
         mkdir -p ~/.buildozer/android/platform
