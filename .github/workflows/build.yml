@@ -14,7 +14,7 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
         pip install buildozer==1.2.0 cython
-    - name: Build Base APK
+    - name: Build APK
       run: |
         rm -f buildozer.spec
         buildozer init
@@ -26,10 +26,10 @@ jobs:
         source.dir = .
         source.include_exts = py,png,jpg,kv,atlas,json
         version = 1.0
-        requirements = python3,kivy
+        requirements = python3==3.10.14,kivy,requests
         orientation = portrait
         fullscreen = 1
-        android.permissions = INTERNET
+        android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
         android.api = 31
         android.minapi = 24
         android.ndk = 25b
