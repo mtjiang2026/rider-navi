@@ -18,25 +18,34 @@ jobs:
       run: |
         git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         
-        # 用 Python 脚本修补 libffi 配方，在 autogen.sh 前插入缺失宏
+        # 用 Python 脚本直接修改 configure.ac，修复过时宏问题
         python3 << 'PYEOF'
         import os
+
         recipe_file = "/home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py"
         with open(recipe_file, 'r') as f:
             content = f.read()
-        
-        # 找到 autogen.sh 调用，在它前面插入修补代码
+
+        # 在 autogen.sh 前插入更彻底的修补代码
         old = "shprint(sh.Command('./autogen.sh'), _env=env)"
-        new = """        # Patch configure.ac to add missing macro
+        new = """        # 彻底修复 configure.ac 中的过时宏，并添加缺失宏
                 configure_ac = os.path.join(build_dir, 'configure.ac')
                 if os.path.exists(configure_ac):
-                    with open(configure_ac, 'a') as f:
+                    with open(configure_ac, 'r+') as f:
+                        lines = f.readlines()
+                        f.seek(0)
+                        for line in lines:
+                            # 注释掉过时的宏调用，避免 autoreconf 报错
+                            if 'AC_CANONICAL_SYSTEM' in line or 'AC_PROG_LIBTOOL' in line or 'AC_HEADER_STDC' in line or 'AC_TRY_COMPILE' in line or 'AC_TRY_LINK' in line or 'AC_TRY_RUN' in line or 'AC_HELP_STRING' in line:
+                                line = '#' + line
+                            f.write(line)
                         f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')
                 shprint(sh.Command('./autogen.sh'), _env=env)"""
         content = content.replace(old, new)
+
         with open(recipe_file, 'w') as f:
             f.write(content)
-        print("libffi recipe patched.")
+        print("libffi recipe fully patched.")
         PYEOF
 
         # 手动下载 NDK 和 SDK
