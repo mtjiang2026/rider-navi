@@ -19,38 +19,27 @@ jobs:
         # 克隆 master 分支
         git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         
-        # 用修复后的 libffi 配方替换原文件
-        cat > /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py << 'RECIPEEOF'
+        # 用 Python 脚本修改 libffi 配方，在 autogen.sh 前修补 configure.ac
+        python3 << 'PYTHONEOF'
         import os
-        import sh
-        from pythonforandroid.logger import shprint
-        from pythonforandroid.recipe import NDKRecipe
-
-
-        class LibffiRecipe(NDKRecipe):
-            version = '3.4.2'
-            url = 'https://github.com/libffi/libffi/archive/v{version}.tar.gz'
-            name = 'libffi'
-
-            def build_arch(self, arch):
-                env = self.get_recipe_env(arch)
-                build_dir = self.get_build_dir(arch.arch)
-                configure = sh.Command(os.path.join(build_dir, 'configure'))
-
-                # 在运行 autogen.sh 之前，修补 configure.ac 添加缺失宏
-                configure_ac = os.path.join(build_dir, 'configure.ac')
-                if os.path.exists(configure_ac):
-                    with open(configure_ac, 'a') as f:
-                        f.write('\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n')
-                    shprint(sh.Command('./autogen.sh'), _env=env)
-
-                shprint(configure, '--host={}'.format(arch.command_prefix), '--prefix={}'.format(self.ctx.get_python_install_dir()), _env=env)
-                shprint(sh.make, '-j4', _env=env)
-                shprint(sh.make, 'install', _env=env)
-
-
-        recipe = LibffiRecipe()
-        RECIPEEOF
+        recipe_path = "/home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py"
+        with open(recipe_path, 'r') as f:
+            content = f.read()
+        
+        # 寻找 'shprint(sh.Command('./autogen.sh')' 那一行，并在之前插入修补代码
+        old_line = "shprint(sh.Command('./autogen.sh'), _env=env)"
+        new_code = """        # Patch configure.ac to add missing macro
+        configure_ac = os.path.join(build_dir, 'configure.ac')
+        if os.path.exists(configure_ac):
+            with open(configure_ac, 'a') as f:
+                f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')
+        """
+        new_content = content.replace(old_line, new_code + "\n        " + old_line)
+        
+        with open(recipe_path, 'w') as f:
+            f.write(new_content)
+        print("libffi recipe patched successfully.")
+        PYTHONEOF
         
         # 手动下载 NDK 和 sdl2_image
         mkdir -p ~/.buildozer/android/platform
