@@ -14,13 +14,16 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget autoconf libtool cmake
         pip install buildozer==1.2.0 cython
-    - name: Prepare custom python-for-android (fix libffi)
+    - name: Download NDK r25b manually
       run: |
-        # 克隆 develop 分支以获得最新配方
-        git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
-        
-        # 直接修改 libffi 配方，只在末尾添加缺失宏，不注释任何过时宏
-        sed -i "/shprint(sh.Command('.\/autogen.sh'), _env=env)/i \        # 追加缺失的宏定义\n        configure_ac = os.path.join(build_dir, 'configure.ac')\n        with open(configure_ac, 'a') as f:\n            f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        mkdir -p ~/.buildozer/android/platform
+        cd ~/.buildozer/android/platform
+        if [ ! -d "android-ndk-r25b" ]; then
+          wget -q --show-progress "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
+          unzip -q android-ndk-r25b-linux.zip
+          rm android-ndk-r25b-linux.zip
+        fi
+        echo "NDK is ready."
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -41,7 +44,7 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.source_dir = /home/runner/p4a-custom
+        p4a.branch = develop
         
         [buildozer]
         log_level = 2
