@@ -14,6 +14,8 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
         pip install buildozer==1.4.0 cython
+        # 删除 Buildozer 中强制要求 AAB 的检查代码
+        find /opt/hostedtoolcache -name "android.py" -path "*/buildozer/targets/*" -exec sed -i '/check aab support/,/raise BuildozerException/{s/^/#/}' {} \;
     - name: Build APK
       run: |
         rm -f buildozer.spec
