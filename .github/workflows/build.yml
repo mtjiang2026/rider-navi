@@ -49,6 +49,27 @@ jobs:
         log_level = 2
         warn_on_root = 1
         SPECEOF
+        
+        # 在 buildozer 实际编译前，修补所有 libffi 的 configure.ac 文件
+        echo "正在修补 libffi 源码中的过时宏..."
+        find ~/.buildozer/android/platform/build-* -name "configure.ac" -path "*/libffi/*" | while read ac_file; do
+          if grep -q "LT_SYS_SYMBOL_USCORE" "$ac_file"; then
+            # 注释掉所有过时的宏调用，避免 autoreconf 报错
+            sed -i 's/^AC_CANONICAL_SYSTEM/#AC_CANONICAL_SYSTEM/' "$ac_file"
+            sed -i 's/^AC_PROG_LIBTOOL/#AC_PROG_LIBTOOL/' "$ac_file"
+            sed -i 's/^AC_HEADER_STDC/#AC_HEADER_STDC/' "$ac_file"
+            sed -i 's/^AC_TRY_COMPILE/#AC_TRY_COMPILE/' "$ac_file"
+            sed -i 's/^AC_TRY_LINK/#AC_TRY_LINK/' "$ac_file"
+            sed -i 's/^AC_TRY_RUN/#AC_TRY_RUN/' "$ac_file"
+            sed -i 's/^AC_HELP_STRING/#AC_HELP_STRING/' "$ac_file"
+            # 补充缺失的宏定义
+            echo "" >> "$ac_file"
+            echo "AC_DEFUN([LT_SYS_SYMBOL_USCORE], [])" >> "$ac_file"
+            echo "已修补: $ac_file"
+          fi
+        done
+        
+        # 开始打包
         buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
