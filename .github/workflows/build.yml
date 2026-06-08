@@ -9,11 +9,18 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-    - name: Install Buildozer and tools
+    - name: Install Buildozer 1.2.0 and tools
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget autoconf libtool cmake
-        pip install buildozer cython
+        pip install buildozer==1.2.0 cython
+    - name: Prepare custom python-for-android (fix libffi)
+      run: |
+        # 克隆 develop 分支以获得最新配方
+        git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
+        
+        # 直接修改 libffi 配方，只在末尾添加缺失宏，不注释任何过时宏
+        sed -i "/shprint(sh.Command('.\/autogen.sh'), _env=env)/i \        # 追加缺失的宏定义\n        configure_ac = os.path.join(build_dir, 'configure.ac')\n        with open(configure_ac, 'a') as f:\n            f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -30,11 +37,11 @@ jobs:
         orientation = portrait
         fullscreen = 1
         android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
-        android.api = 31
+        android.api = 33
         android.minapi = 24
-        android.ndk = 23c
+        android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = master
+        p4a.source_dir = /home/runner/p4a-custom
         
         [buildozer]
         log_level = 2
