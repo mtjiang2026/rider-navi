@@ -12,14 +12,20 @@ jobs:
     - name: Install Buildozer 1.2.0 and Cython
       run: |
         sudo apt update
-        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
+        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget autoconf libtool
         pip install buildozer==1.2.0 cython
-    - name: Prepare custom python-for-android (skip libffi autogen)
+    - name: Prepare custom python-for-android (fix libffi)
       run: |
-        # 克隆 master 分支（兼容 Python 3.8），并修复 libffi 配方
+        # 克隆 master 分支（兼容 Python 3.8）
         git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
-        sed -i "s/shprint(sh.Command('.\/autogen.sh'), _env=env)/shprint(sh.Command('true'))/" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
-        # 手动下载 NDK
+        
+        # 修复 libffi 配方：添加缺失宏，确保 autoreconf 成功
+        cd /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        # 在调用 autogen.sh 前，注入缺失宏的定义
+        sed -i "/shprint(sh.Command('.\/autogen.sh')/i \    # Patch configure.ac to add missing macro" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        sed -i "/shprint(sh.Command('.\/autogen.sh')/i \    with open('configure.ac', 'a') as f: f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        
+        # 手动下载 NDK 和 sdl2_image（避免网络超时）
         mkdir -p ~/.buildozer/android/platform
         if [ ! -d ~/.buildozer/android/platform/android-ndk-r25b ]; then
           wget -q --show-progress -O ~/.buildozer/android/platform/ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
@@ -27,7 +33,6 @@ jobs:
           unzip -q ndk.zip
           rm ndk.zip
         fi
-        # 手动下载 sdl2_image
         mkdir -p ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         cd ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
         if [ ! -f SDL2_image-2.8.2.tar.gz ]; then
