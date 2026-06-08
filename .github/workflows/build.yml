@@ -14,75 +14,6 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
         pip install buildozer==1.2.0 cython
-    - name: Prepare custom python-for-android (fix libffi)
-      run: |
-        git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
-        
-        # 直接创建一个修复好的 libffi 配方文件（缩进完全正确）
-        cat > /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py << 'RECIPEEOF'
-import os
-import sh
-from pythonforandroid.logger import shprint
-from pythonforandroid.recipe import NDKRecipe
-
-
-class LibffiRecipe(NDKRecipe):
-    version = '3.4.2'
-    url = 'https://github.com/libffi/libffi/archive/v{version}.tar.gz'
-    name = 'libffi'
-
-    def get_include_dirs(self, arch):
-        return [os.path.join(self.get_build_dir(arch.arch), 'include')]
-
-    def build_arch(self, arch):
-        env = self.get_recipe_env(arch)
-        build_dir = self.get_build_dir(arch.arch)
-        configure = sh.Command(os.path.join(build_dir, 'configure'))
-
-        # 修补 configure.ac，注释过时宏并添加缺失宏
-        configure_ac = os.path.join(build_dir, 'configure.ac')
-        if os.path.exists(configure_ac):
-            with open(configure_ac, 'r+') as f:
-                lines = f.readlines()
-                f.seek(0)
-                for line in lines:
-                    if any(macro in line for macro in [
-                        'AC_CANONICAL_SYSTEM', 'AC_PROG_LIBTOOL',
-                        'AC_HEADER_STDC', 'AC_TRY_COMPILE',
-                        'AC_TRY_LINK', 'AC_TRY_RUN', 'AC_HELP_STRING'
-                    ]):
-                        f.write('#' + line)
-                    else:
-                        f.write(line)
-                f.write('\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n')
-            shprint(sh.Command('./autogen.sh'), _env=env)
-
-        shprint(configure,
-                '--host={}'.format(arch.command_prefix),
-                '--prefix={}'.format(self.ctx.get_python_install_dir()),
-                _env=env)
-        shprint(sh.make, '-j4', _env=env)
-        shprint(sh.make, 'install', _env=env)
-
-
-recipe = LibffiRecipe()
-RECIPEEOF
-
-        # 手动下载 NDK 和 SDK
-        mkdir -p ~/.buildozer/android/platform
-        cd ~/.buildozer/android/platform
-        if [ ! -d "android-ndk-r25b" ]; then
-          wget -q --show-progress "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
-          unzip -q android-ndk-r25b-linux.zip
-          rm android-ndk-r25b-linux.zip
-        fi
-        if [ ! -d "android-sdk" ]; then
-          wget -q --show-progress "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
-          mkdir -p android-sdk
-          cd android-sdk
-          unzip -q ../commandlinetools-linux-6514223_latest.zip
-          rm ../commandlinetools-linux-6514223_latest.zip
-        fi
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -95,15 +26,15 @@ RECIPEEOF
         source.dir = .
         source.include_exts = py,png,jpg,kv,atlas,json
         version = 1.0
-        requirements = python3,kivy,requests
+        requirements = hostpython3==3.10.14,python3==3.10.14,kivy,requests
         orientation = portrait
         fullscreen = 1
         android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION
-        android.api = 31
+        android.api = 33
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.source_dir = /home/runner/p4a-custom
+        p4a.branch = master
         
         [buildozer]
         log_level = 2
