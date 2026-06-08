@@ -14,6 +14,61 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget autoconf libtool cmake
         pip install buildozer==1.2.0 cython
+    - name: Prepare custom python-for-android (fix libffi)
+      run: |
+        # 克隆 develop 分支，以获得最新的配方
+        git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
+        
+        # 直接修改 libffi 配方，完全绕过 autogen.sh
+        cat > /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py << 'RECIPEEOF'
+        import os
+        import sh
+        from pythonforandroid.logger import shprint
+        from pythonforandroid.recipe import NDKRecipe
+
+        class LibffiRecipe(NDKRecipe):
+            version = '3.4.2'
+            url = 'https://github.com/libffi/libffi/archive/v{version}.tar.gz'
+            name = 'libffi'
+
+            def get_include_dirs(self, arch):
+                return [os.path.join(self.get_build_dir(arch.arch), 'include')]
+
+            def build_arch(self, arch):
+                env = self.get_recipe_env(arch)
+                build_dir = self.get_build_dir(arch.arch)
+                configure = sh.Command(os.path.join(build_dir, 'configure'))
+
+                # 不再运行 autogen.sh，直接修补 configure.ac 并手动生成 configure
+                configure_ac = os.path.join(build_dir, 'configure.ac')
+                if os.path.exists(configure_ac):
+                    with open(configure_ac, 'r+') as f:
+                        content = f.read()
+                        # 注释掉过时的宏
+                        for macro in [
+                            'AC_CANONICAL_SYSTEM', 'AC_PROG_LIBTOOL',
+                            'AC_HEADER_STDC', 'AC_TRY_COMPILE',
+                            'AC_TRY_LINK', 'AC_TRY_RUN', 'AC_HELP_STRING'
+                        ]:
+                            content = content.replace(macro, '#' + macro)
+                        # 追加缺失的宏
+                        if 'LT_SYS_SYMBOL_USCORE' not in content:
+                            content += '\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n'
+                        f.seek(0)
+                        f.write(content)
+                        f.truncate()
+                    # 运行 autoreconf 生成 configure
+                    shprint(sh.Command('autoreconf'), '-fi', _cwd=build_dir, _env=env)
+
+                shprint(configure,
+                        '--host={}'.format(arch.command_prefix),
+                        '--prefix={}'.format(self.ctx.get_python_install_dir()),
+                        _env=env)
+                shprint(sh.make, '-j4', _env=env)
+                shprint(sh.make, 'install', _env=env)
+
+        recipe = LibffiRecipe()
+        RECIPEEOF
     - name: Download NDK r25b manually
       run: |
         mkdir -p ~/.buildozer/android/platform
@@ -43,37 +98,12 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = develop
+        p4a.source_dir = /home/runner/p4a-custom
         
         [buildozer]
         log_level = 2
         warn_on_root = 1
         SPECEOF
-        
-        # 用 Python 精确修补所有 libffi 的 configure.ac
-        python3 << 'PYEOF'
-        import os, glob
-        for ac in glob.glob(os.path.expanduser("~/.buildozer/android/platform/build-*/build/other_builds/libffi/*/libffi/configure.ac")):
-            with open(ac, "r+") as f:
-                content = f.read()
-                if "LT_SYS_SYMBOL_USCORE" not in content:
-                    f.write("\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\n")
-                    print(f"Patched {ac}")
-                f.seek(0)
-                lines = f.readlines()
-                f.seek(0)
-                f.truncate()
-                for line in lines:
-                    if any(macro in line for macro in [
-                        "AC_CANONICAL_SYSTEM", "AC_PROG_LIBTOOL",
-                        "AC_HEADER_STDC", "AC_TRY_COMPILE",
-                        "AC_TRY_LINK", "AC_TRY_RUN", "AC_HELP_STRING"
-                    ]) and not line.startswith("#"):
-                        f.write("#" + line)
-                    else:
-                        f.write(line)
-        PYEOF
-        
         buildozer -v android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
