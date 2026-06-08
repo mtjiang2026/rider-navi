@@ -9,18 +9,16 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer 1.2.0 and Cython
+    - name: Install Buildozer and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
-        pip install buildozer==1.2.0 cython
-    - name: Download NDK manually
+        pip install buildozer cython
+    - name: Download sdl2_image manually
       run: |
-        mkdir -p ~/.buildozer/android/platform
-        wget -q --show-progress -O ~/.buildozer/android/platform/ndk.zip "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
-        cd ~/.buildozer/android/platform
-        unzip -q ndk.zip
-        rm ndk.zip
+        mkdir -p ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
+        cd ~/.buildozer/android/platform/build-armeabi-v7a/packages/sdl2_image
+        wget -q --show-progress -O SDL2_image-2.8.2.tar.gz "https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-2.8.2.tar.gz"
     - name: Build APK
       run: |
         rm -f buildozer.spec
@@ -41,7 +39,7 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = master
+        p4a.branch = develop
         
         [buildozer]
         log_level = 2
