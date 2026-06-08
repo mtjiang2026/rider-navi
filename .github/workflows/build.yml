@@ -16,8 +16,8 @@ jobs:
         pip install buildozer==1.2.0 cython
     - name: Prepare custom python-for-android (skip libffi autogen)
       run: |
-        # 克隆 develop 分支并修复 libffi 配方
-        git clone -b develop --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
+        # 克隆 master 分支（兼容 Python 3.8），并修复 libffi 配方
+        git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         sed -i "s/shprint(sh.Command('.\/autogen.sh'), _env=env)/shprint(sh.Command('true'))/" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
         # 手动下载 NDK
         mkdir -p ~/.buildozer/android/platform
