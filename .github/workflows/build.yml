@@ -19,11 +19,10 @@ jobs:
         # 克隆 master 分支（兼容 Python 3.8）
         git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         
-        # 修复 libffi 配方：添加缺失宏，确保 autoreconf 成功
-        cd /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
-        # 在调用 autogen.sh 前，注入缺失宏的定义
-        sed -i "/shprint(sh.Command('.\/autogen.sh')/i \    # Patch configure.ac to add missing macro" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
-        sed -i "/shprint(sh.Command('.\/autogen.sh')/i \    with open('configure.ac', 'a') as f: f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')" /home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py
+        # 修复 libffi 配方：在运行 autogen.sh 之前修补 configure.ac
+        cd /home/runner/p4a-custom/pythonforandroid/recipes/libffi
+        LINE=$(grep -n "shprint(sh.Command('.\/autogen.sh')" __init__.py | cut -d: -f1)
+        sed -i "${LINE} i\        # Patch configure.ac to add missing macro\n        import os\n        configure_ac = os.path.join(self.get_build_dir(arch.arch), 'configure.ac')\n        with open(configure_ac, 'a') as f:\n            f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')" __init__.py
         
         # 手动下载 NDK 和 sdl2_image（避免网络超时）
         mkdir -p ~/.buildozer/android/platform
