@@ -14,20 +14,39 @@ jobs:
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip wget
         pip install buildozer==1.2.0 cython
-    - name: Download NDK and SDK manually
+    - name: Prepare custom python-for-android (fix libffi)
       run: |
-        # 创建缓存目录
-        mkdir -p ~/.buildozer/android/platform
+        git clone -b master --depth 1 https://github.com/kivy/python-for-android.git /home/runner/p4a-custom
         
-        # 下载 NDK r25b
+        # 用 Python 脚本修补 libffi 配方，在 autogen.sh 前插入缺失宏
+        python3 << 'PYEOF'
+        import os
+        recipe_file = "/home/runner/p4a-custom/pythonforandroid/recipes/libffi/__init__.py"
+        with open(recipe_file, 'r') as f:
+            content = f.read()
+        
+        # 找到 autogen.sh 调用，在它前面插入修补代码
+        old = "shprint(sh.Command('./autogen.sh'), _env=env)"
+        new = """        # Patch configure.ac to add missing macro
+                configure_ac = os.path.join(build_dir, 'configure.ac')
+                if os.path.exists(configure_ac):
+                    with open(configure_ac, 'a') as f:
+                        f.write('\\nAC_DEFUN([LT_SYS_SYMBOL_USCORE], [])\\n')
+                shprint(sh.Command('./autogen.sh'), _env=env)"""
+        content = content.replace(old, new)
+        with open(recipe_file, 'w') as f:
+            f.write(content)
+        print("libffi recipe patched.")
+        PYEOF
+
+        # 手动下载 NDK 和 SDK
+        mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
         if [ ! -d "android-ndk-r25b" ]; then
           wget -q --show-progress "https://dl.google.com/android/repository/android-ndk-r25b-linux.zip"
           unzip -q android-ndk-r25b-linux.zip
           rm android-ndk-r25b-linux.zip
         fi
-        
-        # 下载 SDK command line tools
         if [ ! -d "android-sdk" ]; then
           wget -q --show-progress "https://dl.google.com/android/repository/commandlinetools-linux-6514223_latest.zip"
           mkdir -p android-sdk
@@ -55,7 +74,7 @@ jobs:
         android.minapi = 24
         android.ndk = 25b
         android.accept_sdk_license = True
-        p4a.branch = master
+        p4a.source_dir = /home/runner/p4a-custom
         
         [buildozer]
         log_level = 2
