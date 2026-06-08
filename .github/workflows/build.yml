@@ -9,13 +9,13 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    - name: Install Buildozer 1.4.0 and Cython
+    - name: Install Buildozer and Cython
       run: |
         sudo apt update
         sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
-        pip install buildozer==1.4.0 cython
-        # 删除 Buildozer 中强制要求 AAB 的检查代码
-        find /opt/hostedtoolcache -name "android.py" -path "*/buildozer/targets/*" -exec sed -i '/check aab support/,/raise BuildozerException/{s/^/#/}' {} \;
+        pip install buildozer cython
+    - name: Clear old p4a cache
+      run: rm -rf ~/.buildozer/android/platform/python-for-android
     - name: Build APK
       run: |
         rm -f buildozer.spec
